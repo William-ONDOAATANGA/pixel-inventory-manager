@@ -1,0 +1,32 @@
+{
+  "magasin": "Pixel Game Store",
+  "stock": [
+    {
+      "id": 1,
+      "type": "jeu",
+      "nom": "The Legend of Zelda: Tears of the Kingdom",
+      "plateforme": "Nintendo Switch",
+      "prix": 59.99,
+      "quantite": 15,
+      "image": "assets/img/zelda_totk.jpg"
+    },
+    {
+      "id": 2,
+      "type": "console",
+      "nom": "PlayStation 5 Slim",
+      "plateforme": "Sony",
+      "prix": 549.99,
+      "quantite": 4,
+      "image": "assets/img/ps5_slim.jpg"
+    },
+    {
+      "id": 3,
+      "type": "accessoire",
+      "nom": "Manette Xbox Carbon Black",
+      "plateforme": "Xbox Series",
+      "prix": 59.99,
+      "quantite": 8,
+      "image": "assets/img/xbox_controller.jpg"
+    }
+  ]
+}
