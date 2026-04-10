@@ -1,0 +1,67 @@
+/* Import d'une police typée Gaming */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
+:root {
+    --bg-color: #0d0d1a;
+    --card-bg: #1a1a2e;
+    --accent-color: #00f2ff; /* Cyan néon */
+    --text-color: #e0e0e0;
+    --success-color: #39ff14; /* Vert néon pour le stock */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Grille pour l'inventaire */
+#product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Style des cartes de jeux */
+.product-card {
+    background: var(--card-bg);
+    border: 1px solid #303050;
+    border-radius: 10px;
+    padding: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+    border-color: var(--accent-color);
+}
+
+.product-card h3 {
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+.price {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: var(--success-color);
+}
