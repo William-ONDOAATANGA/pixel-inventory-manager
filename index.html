@@ -8,23 +8,67 @@
 </head>
 <body>
     <header>
-        <h1>🎮 Pixel Inventory Manager</h1>
+        <h1>🎮 PIXEL INVENTORY MANAGER</h1>
         <nav>
             <ul>
-                <li><a href="#">Tableau de bord</a></li>
-                <li><a href="#">Ajouter un produit</a></li>
+                <li><a href="#inventory-list">Inventaire</a></li>
+                <li><a href="#add-product-section">Ajouter un produit</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section id="stats-overview">
-            </section>
+        <section id="controls" class="panel">
+            <input type="text" id="search-bar" placeholder="🔍 Rechercher un jeu, une console...">
+            <select id="filter-type">
+                <option value="all">Toutes les catégories</option>
+                <option value="jeu">Jeux Vidéo</option>
+                <option value="console">Consoles</option>
+                <option value="accessoire">Accessoires</option>
+            </select>
+        </section>
 
         <section id="inventory-list">
             <h2>Inventaire actuel</h2>
             <div id="product-container">
                 </div>
+        </section>
+
+        <section id="add-product-section" class="panel form-panel">
+            <h2>🕹️ Ajouter un nouveau produit</h2>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label>Type de produit *</label>
+                    <select id="new-type" required>
+                        <option value="jeu">Jeu Vidéo</option>
+                        <option value="console">Console</option>
+                        <option value="accessoire">Accessoire</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nom du produit *</label>
+                    <input type="text" id="new-nom" placeholder="ex: Elden Ring" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Plateforme *</label>
+                    <input type="text" id="new-plateforme" placeholder="ex: PS5, Switch..." required>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Prix (€) *</label>
+                        <input type="number" id="new-prix" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité (Stock) *</label>
+                        <input type="number" id="new-quantite" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">✅ Ajouter à l'inventaire</button>
+            </form>
         </section>
     </main>
 
