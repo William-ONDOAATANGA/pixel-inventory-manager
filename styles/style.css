@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
 
 :root {
-    --bg-color: #0b0c10;
-    --card-bg: #1f2833;
-    --text-color: #c5c6c7;
+    --bg-color: #0d0d1a;
+    --card-bg: #1a1a2e;
+    --text-color: #e0e0e0;
     
-    /* Couleurs des catégories */
-    --color-jeu: #00f2ff;       /* Cyan */
-    --color-console: #b000ff;   /* Violet */
-    --color-accessoire: #39ff14;/* Vert */
-    
+    /* Néons Micromania Style */
+    --color-jeu: #00f2ff;
+    --color-console: #b000ff;
+    --color-accessoire: #39ff14;
+    --accent-warning: #ffaa00;
     --danger-color: #ff003c;
 }
 
@@ -24,82 +24,116 @@ body {
 header {
     text-align: center;
     border-bottom: 2px solid var(--color-jeu);
-    padding-bottom: 20px;
-    margin-bottom: 30px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 h1 {
     font-family: 'Orbitron', sans-serif;
     color: var(--color-jeu);
-    text-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+    margin-bottom: 5px;
 }
 
-/* Panneaux de contrôle et formulaire */
+nav ul { list-style: none; padding: 0; }
+nav ul li { display: inline; margin: 0 15px; }
+nav a { color: var(--color-jeu); text-decoration: none; font-weight: bold; }
+nav a:hover { text-shadow: 0 0 8px var(--color-jeu); }
+
+/* Panneaux (Filtres & Formulaire) */
 .panel {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
+    align-items: center;
+    border: 1px solid #303050;
 }
 
+.form-panel { flex-direction: column; align-items: stretch; max-width: 800px; margin: 0 auto; }
+.form-group-row { display: flex; gap: 15px; }
+.form-group-row .form-group { flex: 1; }
+.form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
+
+label { margin-bottom: 5px; font-weight: bold; font-size: 0.9em; color: #8a8a9d; }
 input, select {
     background: #0b0c10;
     border: 1px solid #45a29e;
     color: white;
     padding: 10px;
     border-radius: 5px;
-    width: 100%;
+    font-family: 'Roboto', sans-serif;
 }
 
-/* Grille d'inventaire */
+/* Grille Inventaire */
 #product-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
-/* Cartes Produits et Colorimétrie */
+/* Cartes Produits */
 .product-card {
     background: var(--card-bg);
     border: 2px solid #333;
     border-radius: 8px;
     padding: 15px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Application des couleurs selon la classe */
-.card-jeu { border-color: var(--color-jeu); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-.card-console { border-color: var(--color-console); box-shadow: 0 0 10px rgba(176, 0, 255, 0.2); }
-.card-accessoire { border-color: var(--color-accessoire); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+.product-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #0b0c10;
+}
 
-.product-card h3 { margin-top: 0; }
+.card-jeu { border-color: var(--color-jeu); box-shadow: 0 0 10px rgba(0, 242, 255, 0.1); }
+.card-console { border-color: var(--color-console); box-shadow: 0 0 10px rgba(176, 0, 255, 0.1); }
+.card-accessoire { border-color: var(--color-accessoire); box-shadow: 0 0 10px rgba(57, 255, 20, 0.1); }
+
+.product-card h3 { margin: 0 0 10px 0; font-size: 1.1em; }
 .card-jeu h3 { color: var(--color-jeu); }
 .card-console h3 { color: var(--color-console); }
 .card-accessoire h3 { color: var(--color-accessoire); }
 
-.price { font-weight: bold; font-size: 1.2em; }
+.meta-info { font-size: 0.85em; color: #a0a0b0; margin: 2px 0; }
+.meta-info strong { color: #fff; }
+.price { font-weight: bold; font-size: 1.3em; color: white; margin: 10px 0; }
 
-.btn-delete {
-    background: var(--danger-color);
+/* Contrôles de Stock Granulaires */
+.stock-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0b0c10;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: auto; /* Pousse en bas de la carte */
+}
+
+.stock-btn {
+    background: #303050;
     color: white;
     border: none;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-}
-
-.btn-submit {
-    background: var(--color-jeu);
-    color: black;
     font-weight: bold;
-    border: none;
-    padding: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 15px;
 }
+.stock-btn:hover { background: var(--accent-warning); color: black; }
+.stock-display { flex-grow: 1; text-align: center; font-weight: bold; font-size: 1.2em; }
+
+.btn-delete { background: var(--danger-color); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+.btn-submit { background: var(--color-jeu); color: black; font-weight: bold; font-size: 1.1em; border: none; padding: 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+.btn-submit:hover { box-shadow: 0 0 15px var(--color-jeu); }
+
+/* Utilitaires */
+.hidden { display: none !important; }
+.ai-badge { color: var(--accent-warning); font-size: 0.8em; margin-left: 10px; }

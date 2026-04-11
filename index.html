@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Inventory - Gestion de Stock</title>
+    <title>Pixel Inventory - Full CRUD</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
@@ -12,20 +12,37 @@
         <nav>
             <ul>
                 <li><a href="#inventory-list">Inventaire</a></li>
-                <li><a href="#add-product-section">Ajouter un produit</a></li>
+                <li><a href="#add-product-section">Ajouter (Admin)</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section id="controls" class="panel">
-            <input type="text" id="search-bar" placeholder="🔍 Rechercher un jeu, une console...">
-            <select id="filter-type">
-                <option value="all">Toutes les catégories</option>
-                <option value="jeu">Jeux Vidéo</option>
-                <option value="console">Consoles</option>
-                <option value="accessoire">Accessoires</option>
-            </select>
+            <div class="search-box">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher un nom...">
+            </div>
+            <div class="filter-box">
+                <select id="filter-type">
+                    <option value="all">Toutes les catégories</option>
+                    <option value="jeu">Jeux Vidéo</option>
+                    <option value="console">Consoles</option>
+                    <option value="accessoire">Accessoires</option>
+                </select>
+                
+                <select id="filter-etat" class="hidden">
+                    <option value="all">Tous les états</option>
+                    <option value="Neuf">Neuf</option>
+                    <option value="Occasion">Occasion</option>
+                </select>
+            </div>
+            <div class="sort-box">
+                <select id="sort-price">
+                    <option value="none">Trier par...</option>
+                    <option value="asc">Prix : Croissant</option>
+                    <option value="desc">Prix : Décroissant</option>
+                </select>
+            </div>
         </section>
 
         <section id="inventory-list">
@@ -35,39 +52,102 @@
         </section>
 
         <section id="add-product-section" class="panel form-panel">
-            <h2>🕹️ Ajouter un nouveau produit</h2>
+            <h2>🕹️ Enregistrement Produit (Assisté par IA)</h2>
             <form id="add-product-form">
                 <div class="form-group">
-                    <label>Type de produit *</label>
+                    <label>Type d'entité *</label>
                     <select id="new-type" required>
-                        <option value="jeu">Jeu Vidéo</option>
+                        <option value="jeu" selected>Jeu Vidéo</option>
                         <option value="console">Console</option>
                         <option value="accessoire">Accessoire</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label>Nom du produit *</label>
-                    <input type="text" id="new-nom" placeholder="ex: Elden Ring" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Plateforme *</label>
-                    <input type="text" id="new-plateforme" placeholder="ex: PS5, Switch..." required>
+                <div class="form-group ai-assist">
+                    <label>Nom du produit * <span class="ai-badge">✨ Auto-fill IA actif</span></label>
+                    <input type="text" id="new-nom" placeholder="Tape un nom connu (ex: Elden Ring) puis clique ailleurs..." required>
                 </div>
 
                 <div class="form-group-row">
                     <div class="form-group">
-                        <label>Prix (€) *</label>
+                        <label>Prix unitaire (€) *</label>
                         <input type="number" id="new-prix" step="0.01" required>
                     </div>
                     <div class="form-group">
-                        <label>Quantité (Stock) *</label>
+                        <label>Stock initial *</label>
                         <input type="number" id="new-quantite" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">✅ Ajouter à l'inventaire</button>
+                <div class="form-group">
+                    <label>URL de l'image (Jaquette/Produit)</label>
+                    <input type="text" id="new-image" placeholder="https://...">
+                </div>
+
+                <div id="fields-jeu" class="dynamic-fields">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label>Plateforme de jeu *</label>
+                            <input type="text" id="new-plateforme-jeu" placeholder="PS5, Switch, PC...">
+                        </div>
+                        <div class="form-group">
+                            <label>État *</label>
+                            <select id="new-etat">
+                                <option value="Neuf">Neuf</option>
+                                <option value="Occasion">Occasion</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Genre</label>
+                        <select id="new-genre">
+                            <option value="Action/Aventure">Action/Aventure</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Sport">Sport</option>
+                            <option value="FPS/Tir">FPS/Tir</option>
+                            <option value="Combat">Combat</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="fields-console" class="dynamic-fields hidden">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label>Constructeur *</label>
+                            <select id="new-constructeur">
+                                <option value="Sony">Sony</option>
+                                <option value="Microsoft">Microsoft</option>
+                                <option value="Nintendo">Nintendo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Modèle *</label>
+                            <select id="new-modele">
+                                <option value="Standard">Standard / Normal</option>
+                                <option value="Slim">Slim</option>
+                                <option value="Pro">Pro</option>
+                                <option value="Series X">Series X</option>
+                                <option value="Series S">Series S</option>
+                                <option value="OLED">OLED</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fields-accessoire" class="dynamic-fields hidden">
+                    <div class="form-group">
+                        <label>Type de périphérique *</label>
+                        <select id="new-type-acc">
+                            <option value="Manette">Manette</option>
+                            <option value="Casque Gaming">Casque Gaming</option>
+                            <option value="Clavier/Souris">Clavier/Souris</option>
+                            <option value="Volant/Arcade">Volant/Arcade</option>
+                            <option value="Câbles/Autres">Câbles/Autres</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">✅ Ajouter à la base de données</button>
             </form>
         </section>
     </main>
