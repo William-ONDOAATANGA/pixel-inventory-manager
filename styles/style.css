@@ -5,7 +5,6 @@
     --card-bg: #1a1a2e;
     --text-color: #e0e0e0;
     
-    /* Néons Micromania Style */
     --color-jeu: #00f2ff;
     --color-console: #b000ff;
     --color-accessoire: #39ff14;
@@ -40,7 +39,7 @@ nav ul li { display: inline; margin: 0 15px; }
 nav a { color: var(--color-jeu); text-decoration: none; font-weight: bold; }
 nav a:hover { text-shadow: 0 0 8px var(--color-jeu); }
 
-/* Panneaux (Filtres & Formulaire) */
+/* Panneaux */
 .panel {
     background: var(--card-bg);
     padding: 20px;
@@ -67,6 +66,7 @@ input, select {
     border-radius: 5px;
     font-family: 'Roboto', sans-serif;
 }
+input:focus, select:focus { outline: none; border-color: var(--color-jeu); }
 
 /* Grille Inventaire */
 #product-container {
@@ -83,7 +83,9 @@ input, select {
     padding: 15px;
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s;
 }
+.product-card:hover { transform: translateY(-5px); }
 
 .product-img {
     width: 100%;
@@ -103,11 +105,11 @@ input, select {
 .card-console h3 { color: var(--color-console); }
 .card-accessoire h3 { color: var(--color-accessoire); }
 
-.meta-info { font-size: 0.85em; color: #a0a0b0; margin: 2px 0; }
+.meta-info { font-size: 0.85em; color: #a0a0b0; margin: 3px 0; }
 .meta-info strong { color: #fff; }
 .price { font-weight: bold; font-size: 1.3em; color: white; margin: 10px 0; }
 
-/* Contrôles de Stock Granulaires */
+/* Contrôles de Stock */
 .stock-controls {
     display: flex;
     align-items: center;
@@ -115,7 +117,7 @@ input, select {
     background: #0b0c10;
     padding: 10px;
     border-radius: 5px;
-    margin-top: auto; /* Pousse en bas de la carte */
+    margin-top: auto;
 }
 
 .stock-btn {
@@ -131,9 +133,10 @@ input, select {
 .stock-display { flex-grow: 1; text-align: center; font-weight: bold; font-size: 1.2em; }
 
 .btn-delete { background: var(--danger-color); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+.btn-delete:hover { opacity: 0.8; }
 .btn-submit { background: var(--color-jeu); color: black; font-weight: bold; font-size: 1.1em; border: none; padding: 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
 .btn-submit:hover { box-shadow: 0 0 15px var(--color-jeu); }
 
 /* Utilitaires */
 .hidden { display: none !important; }
-.ai-badge { color: var(--accent-warning); font-size: 0.8em; margin-left: 10px; }
+.ai-badge { color: var(--accent-warning); font-size: 0.8em; margin-left: 10px; transition: color 0.3s; }

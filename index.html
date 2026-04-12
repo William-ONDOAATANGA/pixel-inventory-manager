@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Inventory - Full CRUD</title>
+    <title>Pixel Inventory - Full System</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
@@ -46,13 +46,13 @@
         </section>
 
         <section id="inventory-list">
-            <h2>Inventaire actuel</h2>
+            <h2>Inventaire en direct</h2>
             <div id="product-container">
                 </div>
         </section>
 
         <section id="add-product-section" class="panel form-panel">
-            <h2>🕹️ Enregistrement Produit (Assisté par IA)</h2>
+            <h2>🕹️ Enregistrement Produit</h2>
             <form id="add-product-form">
                 <div class="form-group">
                     <label>Type d'entité *</label>
@@ -64,8 +64,8 @@
                 </div>
                 
                 <div class="form-group ai-assist">
-                    <label>Nom du produit * <span class="ai-badge">✨ Auto-fill IA actif</span></label>
-                    <input type="text" id="new-nom" placeholder="Tape un nom connu (ex: Elden Ring) puis clique ailleurs..." required>
+                    <label>Nom du produit * <span class="ai-badge">✨ Auto-fill IA (Jeux uniquement)</span></label>
+                    <input type="text" id="new-nom" placeholder="Saisis le nom puis clique ailleurs..." required>
                 </div>
 
                 <div class="form-group-row">
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URL de l'image (Jaquette/Produit)</label>
+                    <label>URL de l'image (Optionnel)</label>
                     <input type="text" id="new-image" placeholder="https://...">
                 </div>
 
@@ -99,13 +99,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Genre</label>
+                        <label>Genre *</label>
                         <select id="new-genre">
-                            <option value="Action/Aventure">Action/Aventure</option>
-                            <option value="RPG">RPG</option>
-                            <option value="Sport">Sport</option>
-                            <option value="FPS/Tir">FPS/Tir</option>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="Action/Aventure">Action / Aventure</option>
+                            <option value="RPG">RPG / Jeu de rôle</option>
+                            <option value="FPS/TPS">FPS / TPS (Tir)</option>
+                            <option value="Plateforme">Plateforme</option>
                             <option value="Combat">Combat</option>
+                            <option value="Course">Course</option>
+                            <option value="Sport">Sport</option>
+                            <option value="Stratégie/Gestion">Stratégie / Gestion</option>
+                            <option value="Simulation">Simulation</option>
+                            <option value="Party Game">Party Game</option>
                         </select>
                     </div>
                 </div>
@@ -132,22 +138,38 @@
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div id="fields-accessoire" class="dynamic-fields hidden">
-                    <div class="form-group">
-                        <label>Type de périphérique *</label>
-                        <select id="new-type-acc">
-                            <option value="Manette">Manette</option>
-                            <option value="Casque Gaming">Casque Gaming</option>
-                            <option value="Clavier/Souris">Clavier/Souris</option>
-                            <option value="Volant/Arcade">Volant/Arcade</option>
-                            <option value="Câbles/Autres">Câbles/Autres</option>
-                        </select>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label>Couleur *</label>
+                            <input type="text" id="new-couleur-console" placeholder="ex: Blanc, Noir, Édition Limitée">
+                        </div>
+                        <div class="form-group">
+                            <label>Manettes incluses *</label>
+                            <input type="number" id="new-manettes" min="0" value="1">
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">✅ Ajouter à la base de données</button>
+                <div id="fields-accessoire" class="dynamic-fields hidden">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label>Type de périphérique *</label>
+                            <select id="new-type-acc">
+                                <option value="Manette">Manette</option>
+                                <option value="Casque Gaming">Casque Gaming</option>
+                                <option value="Clavier/Souris">Clavier/Souris</option>
+                                <option value="Volant/Arcade">Volant/Arcade</option>
+                                <option value="Câbles/Autres">Câbles/Autres</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Couleur *</label>
+                            <input type="text" id="new-couleur-acc" placeholder="ex: Rouge, Noir, Camouflage">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">✅ Ajouter à l'inventaire</button>
             </form>
         </section>
     </main>
