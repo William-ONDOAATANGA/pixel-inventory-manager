@@ -503,7 +503,7 @@ document.getElementById('add-user-btn').addEventListener('click', () => {
         document.getElementById('new-password').value = '';
         renderUsersList();
     } else {
-        showToast("Cet utilisateur existe déjà.", true);
+        showToast("Cet utilisateur existe, il existe déjà.", true);
     }
 });
 
