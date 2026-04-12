@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <!-- Interface principale (visible après connexion) -->
+    <!-- Interface principale -->
     <div id="app-container" class="hidden">
         <header>
             <h1>🎮 PIXEL INVENTORY MANAGER PRO</h1>
@@ -113,7 +113,6 @@
             <section id="add-product-section" class="panel form-panel">
                 <h2>🕹️ Ajouter un produit</h2>
                 <form id="add-product-form">
-                    <!-- mêmes champs que précédemment -->
                     <div class="form-group">
                         <label>Type d'entité *</label>
                         <select id="new-type" required>
@@ -131,6 +130,7 @@
                         <div class="form-group"><label>Stock initial *</label><input type="number" id="new-quantite" required></div>
                     </div>
                     <div class="form-group"><label>URL de l'image (Optionnel)</label><input type="text" id="new-image" placeholder="https://..."></div>
+
                     <div id="fields-jeu" class="dynamic-fields">
                         <div class="form-group-row">
                             <div class="form-group"><label>Plateforme de jeu *</label><input type="text" id="new-plateforme-jeu" placeholder="PS5, Switch, PC..."></div>
@@ -138,6 +138,7 @@
                         </div>
                         <div class="form-group"><label>Genre *</label><select id="new-genre"><option value="">-- Sélectionner --</option><option>Action/Aventure</option><option>RPG</option><option>FPS/TPS</option><option>Plateforme</option><option>Combat</option><option>Course</option><option>Sport</option><option>Stratégie/Gestion</option><option>Simulation</option><option>Party Game</option></select></div>
                     </div>
+
                     <div id="fields-console" class="dynamic-fields hidden">
                         <div class="form-group-row">
                             <div class="form-group"><label>Constructeur *</label><select id="new-constructeur"><option value="Sony">Sony</option><option value="Microsoft">Microsoft</option><option value="Nintendo">Nintendo</option></select></div>
@@ -148,6 +149,7 @@
                             <div class="form-group"><label>Manettes incluses *</label><input type="number" id="new-manettes" min="0" value="1"></div>
                         </div>
                     </div>
+
                     <div id="fields-accessoire" class="dynamic-fields hidden">
                         <div class="form-group-row">
                             <div class="form-group"><label>Type de périphérique *</label><select id="new-type-acc"><option value="Manette">Manette</option><option value="Casque Gaming">Casque Gaming</option><option value="Clavier/Souris">Clavier/Souris</option><option value="Volant/Arcade">Volant/Arcade</option><option value="Câbles/Autres">Câbles/Autres</option></select></div>
@@ -191,7 +193,7 @@
             </section>
         </main>
 
-        <!-- Modal d'édition produit (inchangée) -->
+        <!-- Modal d'édition produit -->
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header"><h2>✏️ Modifier le produit</h2><span class="close-modal">&times;</span></div>
