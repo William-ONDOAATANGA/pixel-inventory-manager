@@ -1,8 +1,108 @@
-// Configuration API RAWG
+// ==================== CONFIGURATION ====================
 const RAWG_API_KEY = 'eb913bba43a54fa5b3fd87307730494c';
 let inventoryData = [];
+let currentUser = null;
 
-// --- UTILITAIRES ---
+// ==================== GESTION UTILISATEURS ====================
+function loadUsers() {
+    const users = localStorage.getItem('pixelUsers');
+    if (users) return JSON.parse(users);
+    const defaultUsers = [
+        { username: 'admin', password: 'admin', role: 'admin' },
+        { username: 'demo', password: 'demo', role: 'user' }
+    ];
+    localStorage.setItem('pixelUsers', JSON.stringify(defaultUsers));
+    return defaultUsers;
+}
+
+function saveUsers(users) {
+    localStorage.setItem('pixelUsers', JSON.stringify(users));
+}
+
+function addUser(username, password, role) {
+    let users = loadUsers();
+    if (users.find(u => u.username === username)) return false;
+    users.push({ username, password, role });
+    saveUsers(users);
+    return true;
+}
+
+function deleteUser(username) {
+    let users = loadUsers();
+    if (username === 'admin') return false;
+    const newUsers = users.filter(u => u.username !== username);
+    saveUsers(newUsers);
+    return true;
+}
+
+function authenticate(username, password) {
+    const users = loadUsers();
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+        currentUser = user;
+        localStorage.setItem('pixelCurrentUser', JSON.stringify({ username: user.username, role: user.role }));
+        return true;
+    }
+    return false;
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('pixelCurrentUser');
+    showLoginScreen();
+}
+
+function showLoginScreen() {
+    document.getElementById('login-container').style.display = 'flex';
+    document.getElementById('app-container').classList.add('hidden');
+}
+
+function showAppScreen() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('app-container').classList.remove('hidden');
+    document.getElementById('current-user').innerText = currentUser.username;
+    const usersSection = document.getElementById('users-section');
+    if (currentUser.role === 'admin') {
+        usersSection.classList.remove('hidden');
+        renderUsersList();
+    } else {
+        usersSection.classList.add('hidden');
+    }
+}
+
+function renderUsersList() {
+    const users = loadUsers();
+    const tbody = document.querySelector('#users-table tbody');
+    tbody.innerHTML = '';
+    users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(user.username)}</td>
+            <td>${user.role === 'admin' ? 'Admin' : 'Utilisateur'}</td>
+            <td><button class="delete-user-btn" data-username="${user.username}">🗑️ Supprimer</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const username = btn.dataset.username;
+            if (username === currentUser.username) {
+                showToast("Vous ne pouvez pas vous supprimer vous-même !", true);
+                return;
+            }
+            if (confirm(`Supprimer l'utilisateur "${username}" ?`)) {
+                if (deleteUser(username)) {
+                    showToast(`Utilisateur ${username} supprimé.`);
+                    renderUsersList();
+                } else {
+                    showToast("Impossible de supprimer l'administrateur par défaut.", true);
+                }
+            }
+        });
+    });
+}
+
+// ==================== GESTION INVENTAIRE ====================
 function showToast(message, isError = false) {
     const toast = document.createElement('div');
     toast.className = 'success-toast';
@@ -37,7 +137,6 @@ function escapeHtml(str) {
     });
 }
 
-// --- AFFICHAGE ---
 function displayProducts(products) {
     const container = document.getElementById('product-container');
     container.innerHTML = '';
@@ -78,7 +177,6 @@ function displayProducts(products) {
         container.appendChild(card);
     });
 
-    // Attacher événements dynamiques
     document.querySelectorAll('.stock-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(btn.dataset.id);
@@ -94,7 +192,6 @@ function displayProducts(products) {
     });
 }
 
-// --- CRUD ---
 function updateStock(id, change) {
     const product = inventoryData.find(p => p.id === id);
     if (product) {
@@ -114,7 +211,6 @@ function deleteProduct(id) {
     }
 }
 
-// --- MODAL D'ÉDITION ---
 function openEditModal(id) {
     const product = inventoryData.find(p => p.id === id);
     if (!product) return;
@@ -176,7 +272,6 @@ document.getElementById('edit-form').addEventListener('submit', function(e) {
     }
 });
 
-// --- FILTRES ET TRI ---
 function filterInventory() {
     const search = document.getElementById('search-bar').value.toLowerCase();
     const type = document.getElementById('filter-type').value;
@@ -205,7 +300,6 @@ function filterInventory() {
     displayProducts(filtered);
 }
 
-// --- VALIDATION FORMULAIRE AJOUT ---
 function validateForm(type) {
     if (!document.getElementById('new-nom').value.trim()) return "Nom requis";
     if (!document.getElementById('new-prix').value) return "Prix requis";
@@ -255,10 +349,9 @@ document.getElementById('add-product-form').addEventListener('submit', function(
     filterInventory();
     this.reset();
     document.getElementById('new-type').dispatchEvent(new Event('change'));
-    showToast("Produit ajouté avec succès !");
+    showToast("Produit ajouté !");
 });
 
-// --- API RAWG AUTO-FILL ---
 document.getElementById('new-nom').addEventListener('blur', async function() {
     const query = this.value.trim();
     const currentType = document.getElementById('new-type').value;
@@ -286,7 +379,6 @@ document.getElementById('new-nom').addEventListener('blur', async function() {
     }
 });
 
-// --- DYNAMIQUE FORMULAIRE AJOUT (affichage des champs selon type) ---
 document.getElementById('new-type').addEventListener('change', function() {
     const type = this.value;
     const badge = document.getElementById('ai-badge');
@@ -303,7 +395,6 @@ document.getElementById('new-type').addEventListener('change', function() {
     }
 });
 
-// --- EXPORT / IMPORT JSON ---
 document.getElementById('export-btn').addEventListener('click', () => {
     const dataStr = JSON.stringify(inventoryData, null, 2);
     const blob = new Blob([dataStr], {type: 'application/json'});
@@ -337,7 +428,6 @@ document.getElementById('import-file').addEventListener('change', (e) => {
     e.target.value = '';
 });
 
-// --- ÉVÉNEMENTS FILTRES ---
 document.getElementById('filter-type').addEventListener('change', function() {
     const etatFilter = document.getElementById('filter-etat');
     if (this.value === 'jeu') etatFilter.classList.remove('hidden');
@@ -350,7 +440,6 @@ document.getElementById('price-min').addEventListener('input', filterInventory);
 document.getElementById('price-max').addEventListener('input', filterInventory);
 document.getElementById('sort-by').addEventListener('change', filterInventory);
 
-// --- MODAL FERMETURE ---
 document.querySelector('.close-modal').addEventListener('click', () => {
     document.getElementById('edit-modal').style.display = 'none';
 });
@@ -360,8 +449,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// --- INITIALISATION ---
-function initApp() {
+function initInventory() {
     const savedData = localStorage.getItem('pixelInventoryData');
     if (savedData) {
         inventoryData = JSON.parse(savedData);
@@ -377,4 +465,63 @@ function initApp() {
     updateStatistics();
 }
 
-initApp();
+// ==================== AUTHENTIFICATION & INIT ====================
+document.getElementById('login-btn').addEventListener('click', () => {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!username || !password) {
+        document.getElementById('login-error').innerText = "Veuillez remplir tous les champs.";
+        document.getElementById('login-error').classList.remove('hidden');
+        return;
+    }
+    if (authenticate(username, password)) {
+        initInventory();
+        showAppScreen();
+        renderUsersList();
+    } else {
+        document.getElementById('login-error').innerText = "Nom d'utilisateur ou mot de passe incorrect.";
+        document.getElementById('login-error').classList.remove('hidden');
+    }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    logout();
+});
+
+document.getElementById('add-user-btn').addEventListener('click', () => {
+    if (currentUser?.role !== 'admin') return;
+    const username = document.getElementById('new-username').value.trim();
+    const password = document.getElementById('new-password').value;
+    const role = document.getElementById('new-role').value;
+    if (!username || !password) {
+        showToast("Nom d'utilisateur et mot de passe requis.", true);
+        return;
+    }
+    if (addUser(username, password, role)) {
+        showToast(`Utilisateur ${username} ajouté.`);
+        document.getElementById('new-username').value = '';
+        document.getElementById('new-password').value = '';
+        renderUsersList();
+    } else {
+        showToast("Cet utilisateur existe, il existe déjà.", true);
+    }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedUser = localStorage.getItem('pixelCurrentUser');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        const users = loadUsers();
+        const valid = users.find(u => u.username === user.username);
+        if (valid) {
+            currentUser = valid;
+            initInventory();
+            showAppScreen();
+            renderUsersList();
+        } else {
+            showLoginScreen();
+        }
+    } else {
+        showLoginScreen();
+    }
+});
