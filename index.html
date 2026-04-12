@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Inventory - Full System</title>
+    <title>Pixel Inventory Pro - Gestionnaire de Stock Gaming</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
     <header>
-        <h1>🎮 PIXEL INVENTORY MANAGER</h1>
+        <h1>🎮 PIXEL INVENTORY MANAGER PRO</h1>
         <nav>
             <ul>
                 <li><a href="#inventory-list">Inventaire</a></li>
@@ -18,39 +18,78 @@
     </header>
 
     <main>
-        <section id="controls" class="panel">
-            <div class="search-box">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher un nom...">
+        <!-- Section Statistiques -->
+        <section class="panel stats-panel" id="stats-panel">
+            <div class="stat-card">
+                <h3>📦 Produits distincts</h3>
+                <div class="stat-value" id="stat-products">0</div>
             </div>
-            <div class="filter-box">
+            <div class="stat-card">
+                <h3>🎮 Stock total unités</h3>
+                <div class="stat-value" id="stat-total-stock">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>💰 Valeur totale (€)</h3>
+                <div class="stat-value" id="stat-total-value">0.00 €</div>
+            </div>
+        </section>
+
+        <!-- Filtres et actions -->
+        <section id="controls" class="panel filter-panel">
+            <div class="filter-group">
+                <label>🔍 Recherche</label>
+                <input type="text" id="search-bar" placeholder="Nom du produit...">
+            </div>
+            <div class="filter-group">
+                <label>📁 Catégorie</label>
                 <select id="filter-type">
-                    <option value="all">Toutes les catégories</option>
+                    <option value="all">Toutes</option>
                     <option value="jeu">Jeux Vidéo</option>
                     <option value="console">Consoles</option>
                     <option value="accessoire">Accessoires</option>
                 </select>
-                
+            </div>
+            <div class="filter-group">
+                <label>✨ État (Jeux)</label>
                 <select id="filter-etat" class="hidden">
-                    <option value="all">Tous les états</option>
+                    <option value="all">Tous</option>
                     <option value="Neuf">Neuf</option>
                     <option value="Occasion">Occasion</option>
                 </select>
             </div>
-            <div class="sort-box">
-                <select id="sort-price">
-                    <option value="none">Trier par...</option>
-                    <option value="asc">Prix : Croissant</option>
-                    <option value="desc">Prix : Décroissant</option>
+            <div class="filter-group">
+                <label>💰 Prix min</label>
+                <input type="number" id="price-min" step="0.01" placeholder="0">
+            </div>
+            <div class="filter-group">
+                <label>💰 Prix max</label>
+                <input type="number" id="price-max" step="0.01" placeholder="9999">
+            </div>
+            <div class="filter-group">
+                <label>📊 Trier par</label>
+                <select id="sort-by">
+                    <option value="none">Aucun tri</option>
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                    <option value="name-asc">Nom A→Z</option>
+                    <option value="name-desc">Nom Z→A</option>
+                    <option value="stock-asc">Stock croissant</option>
+                    <option value="stock-desc">Stock décroissant</option>
                 </select>
+            </div>
+            <div class="action-buttons">
+                <button id="export-btn" class="btn-action">📤 Exporter JSON</button>
+                <label for="import-file" class="btn-action" style="cursor:pointer;">📥 Importer JSON</label>
+                <input type="file" id="import-file" accept=".json" style="display:none;">
             </div>
         </section>
 
         <section id="inventory-list">
-            <h2>Inventaire en direct</h2>
-            <div id="product-container">
-                </div>
+            <h2>🎲 Inventaire en temps réel</h2>
+            <div id="product-container"></div>
         </section>
 
+        <!-- Formulaire d'ajout -->
         <section id="add-product-section" class="panel form-panel">
             <h2>🕹️ Enregistrement Produit</h2>
             <form id="add-product-form">
@@ -64,7 +103,7 @@
                 </div>
                 
                 <div class="form-group ai-assist">
-                    <label>Nom du produit * <span class="ai-badge">✨ Auto-fill IA (Jeux uniquement)</span></label>
+                    <label>Nom du produit * <span id="ai-badge" class="ai-badge">✨ Auto-fill IA (Jeux uniquement)</span></label>
                     <input type="text" id="new-nom" placeholder="Saisis le nom puis clique ailleurs..." required>
                 </div>
 
@@ -129,7 +168,7 @@
                         <div class="form-group">
                             <label>Modèle *</label>
                             <select id="new-modele">
-                                <option value="Standard">Standard / Normal</option>
+                                <option value="Standard">Standard</option>
                                 <option value="Slim">Slim</option>
                                 <option value="Pro">Pro</option>
                                 <option value="Series X">Series X</option>
@@ -141,7 +180,7 @@
                     <div class="form-group-row">
                         <div class="form-group">
                             <label>Couleur *</label>
-                            <input type="text" id="new-couleur-console" placeholder="ex: Blanc, Noir, Édition Limitée">
+                            <input type="text" id="new-couleur-console" placeholder="ex: Blanc, Noir">
                         </div>
                         <div class="form-group">
                             <label>Manettes incluses *</label>
@@ -164,7 +203,7 @@
                         </div>
                         <div class="form-group">
                             <label>Couleur *</label>
-                            <input type="text" id="new-couleur-acc" placeholder="ex: Rouge, Noir, Camouflage">
+                            <input type="text" id="new-couleur-acc" placeholder="ex: Rouge, Noir">
                         </div>
                     </div>
                 </div>
@@ -173,6 +212,39 @@
             </form>
         </section>
     </main>
+
+    <!-- Modal d'édition -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier le produit</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="edit-nom" required>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Prix (€)</label>
+                        <input type="number" id="edit-prix" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité</label>
+                        <input type="number" id="edit-quantite" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="edit-image">
+                </div>
+                <div id="edit-dynamic-fields"></div>
+                <button type="submit" class="btn-submit">💾 Sauvegarder</button>
+            </form>
+        </div>
+    </div>
 
     <script src="scripts/app.js"></script>
 </body>
