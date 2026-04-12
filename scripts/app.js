@@ -1,23 +1,40 @@
-// Base de données simulée (Tu pourras la lier à ton JSON plus tard)
-let inventoryData = [
-    { id: 1, type: "jeu", nom: "The Legend of Zelda: Tears of the Kingdom", plateforme: "Nintendo Switch", prix: 59.99, quantite: 15, etat: "Neuf", genre: "Action/Aventure", image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000063714/c42553b4fd0312c31e70ec7468c6c9cb1865ee0d2b54cd0bd1e718f12040d67f" },
-    { id: 2, type: "console", nom: "PlayStation 5 Slim", constructeur: "Sony", modele: "Slim", prix: 549.99, quantite: 4, image: "https://gmedia.playstation.com/is/image/SIEPDC/ps5-slim-disc-console-front-white-15nov23?$1600px$" },
-    { id: 3, type: "accessoire", nom: "Manette Xbox Carbon Black", typeAcc: "Manette", prix: 59.99, quantite: 8, image: "https://compass-ssl.xbox.com/assets/2f/6d/2f6d5fb9-8b01-449e-b9b0-9ba24e39ec2f.jpg?n=111101_Gallery-0_1_1350x1013.jpg" }
-];
+// --- CONFIGURATION API ---
+// ⚠️ Remplace 'TA_CLE_API_ICI' par la vraie clé que tu as obtenue sur rawg.io !
+const RAWG_API_KEY = 'eb913bba43a54fa5b3fd87307730494c'; 
 
-// --- 1. AFFICHAGE DES PRODUITS ---
+let inventoryData = [];
+
+// --- 1. GESTION DE LA SAUVEGARDE ---
+function saveInventory() {
+    localStorage.setItem('pixelInventoryData', JSON.stringify(inventoryData));
+}
+
+async function initApp() {
+    const savedData = localStorage.getItem('pixelInventoryData');
+    if (savedData) {
+        inventoryData = JSON.parse(savedData);
+        displayProducts(inventoryData);
+    } else {
+        inventoryData = [
+            { id: 1, type: "jeu", nom: "The Legend of Zelda: Tears of the Kingdom", plateforme: "Nintendo Switch", prix: 59.99, quantite: 15, etat: "Neuf", genre: "Action/Aventure", image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000063714/c42553b4fd0312c31e70ec7468c6c9cb1865ee0d2b54cd0bd1e718f12040d67f" },
+            { id: 2, type: "console", nom: "PlayStation 5 Slim", constructeur: "Sony", modele: "Slim", prix: 549.99, quantite: 4, image: "https://gmedia.playstation.com/is/image/SIEPDC/ps5-slim-disc-console-front-white-15nov23?$1600px$" }
+        ];
+        saveInventory();
+        displayProducts(inventoryData);
+    }
+}
+
+// --- 2. AFFICHAGE DES PRODUITS ---
 function displayProducts(products) {
     const container = document.getElementById('product-container');
     container.innerHTML = '';
 
-    products.forEach((item, index) => {
+    products.forEach((item) => {
         const card = document.createElement('div');
         card.className = `product-card card-${item.type}`;
         
-        // Image par défaut si vide
-        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/300x150/1f2833/00f2ff?text=No+Image';
+        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/300x150/1f2833/00f2ff?text=Image+Manquante';
 
-        // Construction des infos spécifiques selon le type
         let metaHtml = '';
         if (item.type === 'jeu') {
             metaHtml = `<p class="meta-info">Plateforme: <strong>${item.plateforme}</strong></p>
@@ -47,24 +64,26 @@ function displayProducts(products) {
     });
 }
 
-// --- 2. GESTION DU STOCK ET CRUD ---
-function updateStock(id, change) {
+// --- 3. GESTION DU STOCK ET CRUD ---
+window.updateStock = function(id, change) {
     const product = inventoryData.find(p => p.id === id);
     if (product) {
         product.quantite += change;
         if (product.quantite < 0) product.quantite = 0;
-        filterInventory(); // Rafraîchit l'affichage avec les filtres actuels
+        saveInventory();
+        filterInventory(); 
     }
 }
 
-function deleteProduct(id) {
+window.deleteProduct = function(id) {
     if(confirm("Supprimer définitivement ce produit de la base ?")) {
         inventoryData = inventoryData.filter(p => p.id !== id);
+        saveInventory();
         filterInventory();
     }
 }
 
-// --- 3. LOGIQUE DU FORMULAIRE DYNAMIQUE ---
+// --- 4. LOGIQUE DU FORMULAIRE DYNAMIQUE ---
 document.getElementById('new-type').addEventListener('change', function() {
     const type = this.value;
     document.getElementById('fields-jeu').classList.add('hidden');
@@ -73,7 +92,6 @@ document.getElementById('new-type').addEventListener('change', function() {
     document.getElementById(`fields-${type}`).classList.remove('hidden');
 });
 
-// Enregistrement final
 document.getElementById('add-product-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const type = document.getElementById('new-type').value;
@@ -99,21 +117,26 @@ document.getElementById('add-product-form').addEventListener('submit', function(
     }
 
     inventoryData.push(newItem);
+    saveInventory();
     filterInventory();
+    
+    // Reset du formulaire et du badge IA
     this.reset();
-    alert("Produit ajouté au stock !");
+    document.querySelector('.ai-badge').textContent = "✨ Auto-fill IA actif";
+    document.querySelector('.ai-badge').style.color = "var(--accent-warning)";
+    
+    alert("Produit ajouté avec succès et sauvegardé !");
 });
 
-// --- 4. FILTRES AVANCÉS ---
+// --- 5. FILTRES AVANCÉS ---
 document.getElementById('search-bar').addEventListener('input', filterInventory);
 document.getElementById('filter-type').addEventListener('change', function() {
-    // Affiche le sous-filtre "Etat" uniquement si "Jeu" est sélectionné
     const etatFilter = document.getElementById('filter-etat');
     if(this.value === 'jeu') {
         etatFilter.classList.remove('hidden');
     } else {
         etatFilter.classList.add('hidden');
-        etatFilter.value = 'all'; // Reset
+        etatFilter.value = 'all';
     }
     filterInventory();
 });
@@ -139,29 +162,50 @@ function filterInventory() {
     displayProducts(filtered);
 }
 
-// --- 5. SIMULATEUR D'IA (Auto-Fill) ---
-// Quand on quitte le champ "Nom" (blur)
-document.getElementById('new-nom').addEventListener('blur', function() {
-    const text = this.value.toLowerCase();
-    
-    // Base de connaissances "IA" hardcodée
-    if (text.includes("elden ring")) {
-        document.getElementById('new-type').value = 'jeu';
-        document.getElementById('new-type').dispatchEvent(new Event('change')); // Déclenche l'affichage des bons champs
-        document.getElementById('new-prix').value = 49.99;
-        document.getElementById('new-image').value = "https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/aGhopp3MHppi7kooGE2Dtt8C.png";
-        document.getElementById('new-plateforme-jeu').value = "PS5";
-        document.getElementById('new-genre').value = "Action/Aventure";
-    } 
-    else if (text.includes("cyberpunk")) {
-        document.getElementById('new-type').value = 'jeu';
-        document.getElementById('new-type').dispatchEvent(new Event('change'));
-        document.getElementById('new-prix').value = 29.99;
-        document.getElementById('new-image').value = "https://image.api.playstation.com/vulcan/ap/rnd/202311/2812/285ef664a7c0d75a137ce52857eec07797825b7a10787e91.png";
-        document.getElementById('new-plateforme-jeu').value = "PC";
-        document.getElementById('new-genre').value = "RPG";
+// --- 6. LA VRAIE MAGIE : CONNEXION À L'API RAWG ---
+document.getElementById('new-nom').addEventListener('blur', async function() {
+    const query = this.value.trim();
+    if (!query) return; // Si le champ est vide, on arrête
+
+    // On prévient l'utilisateur que ça cherche
+    const badge = document.querySelector('.ai-badge');
+    badge.textContent = "⏳ Recherche dans la base mondiale...";
+    badge.style.color = "#00f2ff"; // Bleu néon
+
+    try {
+        // C'est ici qu'on fait la requête réseau (Fetch)
+        const response = await fetch(`https://api.rawg.io/api/games?search=${query}&key=${RAWG_API_KEY}&page_size=1`);
+        const data = await response.json();
+
+        // Si l'API trouve un jeu correspondant
+        if (data.results && data.results.length > 0) {
+            const game = data.results[0];
+            
+            // On force le type "Jeu Vidéo"
+            document.getElementById('new-type').value = 'jeu';
+            document.getElementById('new-type').dispatchEvent(new Event('change'));
+            
+            // 🌟 On récupère l'image officielle !
+            if (game.background_image) {
+                document.getElementById('new-image').value = game.background_image;
+            }
+            
+            // On récupère le vrai nom officiel (corrige les fautes de frappe)
+            document.getElementById('new-nom').value = game.name;
+
+            badge.textContent = "✅ Jeu reconnu et importé !";
+            badge.style.color = "#39ff14"; // Vert néon
+        } else {
+            // Si le jeu n'existe pas dans la base
+            badge.textContent = "❌ Jeu inconnu, saisie manuelle.";
+            badge.style.color = "#ff003c"; // Rouge
+        }
+    } catch (error) {
+        console.error("Erreur avec l'API RAWG :", error);
+        badge.textContent = "⚠️ Erreur de connexion au serveur";
+        badge.style.color = "#ffaa00"; // Orange
     }
 });
 
-// Lancement
-displayProducts(inventoryData);
+// Lancement au démarrage de la page
+initApp();
