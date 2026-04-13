@@ -1,348 +1,228 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Inventory - ERP System</title>
+    <title>Pixel Inventory Pro - Gestion d'Entreprise</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <div id="login-screen" class="screen-overlay">
-        <div class="login-box panel">
-            <h1 data-i18n="appTitle">🎮 PIXEL INVENTORY</h1>
-            <p data-i18n="loginDesc">Veuillez vous identifier pour accéder au système.</p>
-            <form id="login-form">
-                <input type="text" id="login-user" placeholder="Nom d'utilisateur" required>
-                <input type="password" id="login-pass" placeholder="Mot de passe" required>
-                <button type="submit" class="btn-submit" data-i18n="btnLogin">Se connecter</button>
-            </form>
-            <p class="meta-info" style="margin-top:15px; text-align:center;">
-                <em>Admin par défaut: admin / admin123</em>
-            </p>
+    <!-- Écran de connexion -->
+    <div id="login-container" class="login-container">
+        <div class="login-card">
+            <h2>🎮 PIXEL INVENTORY PRO</h2>
+            <h3 data-i18n="login_title">Connexion</h3>
+            <input type="text" id="login-username" placeholder="Nom d'utilisateur" autocomplete="off">
+            <input type="password" id="login-password" placeholder="Mot de passe">
+            <button id="login-btn" data-i18n="login_btn">Se connecter</button>
+            <p id="login-error" class="error-message hidden"></p>
         </div>
     </div>
 
-    <div id="app-screen" class="hidden">
+    <!-- Interface principale -->
+    <div id="app-container" class="hidden">
         <header>
-            <div class="header-top">
-                <h1 data-i18n="appTitle">🎮 PIXEL INVENTORY</h1>
-                <div class="system-controls">
+            <h1>🎮 PIXEL INVENTORY MANAGER PRO</h1>
+            <div class="user-info">
+                <span>👤 <span id="current-user">---</span></span>
+                <!-- Sélecteurs langue et devise -->
+                <div class="preferences">
                     <select id="lang-selector">
                         <option value="fr">🇫🇷 Français</option>
                         <option value="en">🇬🇧 English</option>
-                        <option value="es">🇪🇸 Español</option>
                     </select>
                     <select id="currency-selector">
-                        <option value="EUR">€ EUR</option>
-                        <option value="USD">$ USD</option>
-                        <option value="FCFA">F FCFA</option>
+                        <option value="EUR">💰 Euro (€)</option>
+                        <option value="XAF">💶 FCFA (CFA)</option>
                     </select>
-                    <div class="user-info">
-                        <span id="current-user-display">User</span>
-                        <button id="btn-logout" class="stock-btn" data-i18n="btnLogout">Déconnexion</button>
-                    </div>
                 </div>
+                <button id="logout-btn" class="btn-action" data-i18n="logout">Déconnexion</button>
             </div>
             <nav>
                 <ul>
-                    <li><a href="#dashboard" data-i18n="navDash">Tableau de bord</a></li>
-                    <li><a href="#inventory-list" data-i18n="navInv">Inventaire</a></li>
-                    <li><a href="#add-product-section" data-i18n="navAdd">Ajouter Produit</a></li>
-                    <li id="nav-admin" class="hidden"><a href="#admin-section" data-i18n="navAdmin" style="color: var(--danger-color);">Panel Admin</a></li>
+                    <li><a href="#inventory-list" data-i18n="nav_inventory">Inventaire</a></li>
+                    <li><a href="#add-product-section" data-i18n="nav_add">Ajouter produit</a></li>
+                    <li><a href="#users-section" data-i18n="nav_users">Gestion utilisateurs</a></li>
                 </ul>
             </nav>
         </header>
 
         <main>
-            <section id="dashboard" class="panel dashboard-grid">
+            <!-- Statistiques -->
+            <section class="panel stats-panel">
                 <div class="stat-card">
-                    <h3 data-i18n="statTotalItems">Total Produits</h3>
-                    <p class="stat-value" id="stat-total-items">0</p>
+                    <h3 data-i18n="stat_products">📦 Produits distincts</h3>
+                    <div class="stat-value" id="stat-products">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3 data-i18n="statTotalValue">Valeur Marchande</h3>
-                    <p class="stat-value highlight" id="stat-total-value">0.00 €</p>
+                    <h3 data-i18n="stat_stock">🎮 Stock total unités</h3>
+                    <div class="stat-value" id="stat-total-stock">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3 data-i18n="statBreakdown">Répartition</h3>
-                    <p class="meta-info">Jeux: <strong id="stat-jeux">0</strong></p>
-                    <p class="meta-info">Consoles: <strong id="stat-consoles">0</strong></p>
-                    <p class="meta-info">Accessoires: <strong id="stat-acc">0</strong></p>
+                    <h3 data-i18n="stat_value">💰 Valeur totale</h3>
+                    <div class="stat-value" id="stat-total-value">0.00 €</div>
                 </div>
             </section>
 
-            <section id="controls" class="panel">
-                <div class="search-box">
-                    <input type="text" id="search-bar" placeholder="🔍 Rechercher..." data-i18n-placeholder="searchPlaceholder">
+            <!-- Filtres -->
+            <section class="panel filter-panel">
+                <div class="filter-group">
+                    <label data-i18n="filter_search">🔍 Recherche</label>
+                    <input type="text" id="search-bar" placeholder="Nom du produit...">
                 </div>
-                <div class="filter-box">
+                <div class="filter-group">
+                    <label data-i18n="filter_category">📁 Catégorie</label>
                     <select id="filter-type">
-                        <option value="all" data-i18n="filterAll">Toutes les catégories</option>
-                        <option value="jeu" data-i18n="filterGames">Jeux Vidéo</option>
-                        <option value="console" data-i18n="filterConsoles">Consoles</option>
-                        <option value="accessoire" data-i18n="filterAcc">Accessoires</option>
+                        <option value="all" data-i18n="all">Toutes</option>
+                        <option value="jeu" data-i18n="games">Jeux Vidéo</option>
+                        <option value="console" data-i18n="consoles">Consoles</option>
+                        <option value="accessoire" data-i18n="accessories">Accessoires</option>
                     </select>
                 </div>
+                <div class="filter-group">
+                    <label data-i18n="filter_condition">✨ État (Jeux)</label>
+                    <select id="filter-etat" class="hidden">
+                        <option value="all" data-i18n="all">Tous</option>
+                        <option value="Neuf" data-i18n="new">Neuf</option>
+                        <option value="Occasion" data-i18n="used">Occasion</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label data-i18n="filter_price_min">💰 Prix min</label>
+                    <input type="number" id="price-min" step="0.01" placeholder="0">
+                </div>
+                <div class="filter-group">
+                    <label data-i18n="filter_price_max">💰 Prix max</label>
+                    <input type="number" id="price-max" step="0.01" placeholder="9999">
+                </div>
+                <div class="filter-group">
+                    <label data-i18n="filter_sort">📊 Trier par</label>
+                    <select id="sort-by">
+                        <option value="none" data-i18n="none">Aucun tri</option>
+                        <option value="price-asc" data-i18n="price_asc">Prix croissant</option>
+                        <option value="price-desc" data-i18n="price_desc">Prix décroissant</option>
+                        <option value="name-asc" data-i18n="name_asc">Nom A→Z</option>
+                        <option value="name-desc" data-i18n="name_desc">Nom Z→A</option>
+                        <option value="stock-asc" data-i18n="stock_asc">Stock croissant</option>
+                        <option value="stock-desc" data-i18n="stock_desc">Stock décroissant</option>
+                    </select>
+                </div>
+                <div class="action-buttons">
+                    <button id="export-btn" class="btn-action" data-i18n="export">📤 Exporter JSON</button>
+                    <label for="import-file" class="btn-action" style="cursor:pointer;" data-i18n="import">📥 Importer JSON</label>
+                    <input type="file" id="import-file" accept=".json" style="display:none;">
+                </div>
             </section>
 
+            <!-- Inventaire -->
             <section id="inventory-list">
-                <h2 data-i18n="liveInventory">Inventaire en direct</h2>
+                <h2 data-i18n="inventory_title">🎲 Inventaire en temps réel</h2>
                 <div id="product-container"></div>
             </section>
 
+            <!-- Ajout produit -->
             <section id="add-product-section" class="panel form-panel">
-                <h2 data-i18n="addProductTitle">👾 Enregistrement Produit</h2>
+                <h2 data-i18n="add_title">🕹️ Ajouter un produit</h2>
                 <form id="add-product-form">
-                    
                     <div class="form-group">
-                        <label>Type d'entité *</label>
+                        <label data-i18n="product_type">Type d'entité *</label>
                         <select id="new-type" required>
-                            <option value="jeu" selected>Jeu Vidéo</option>
-                            <option value="console">Console</option>
-                            <option value="accessoire">Accessoire</option>
+                            <option value="jeu" data-i18n="games">Jeu Vidéo</option>
+                            <option value="console" data-i18n="consoles">Console</option>
+                            <option value="accessoire" data-i18n="accessories">Accessoire</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label><span data-i18n="labelName">Nom du produit *</span> <span id="badge-ia" class="ai-badge">✨ Auto-fill IA</span></label>
-                        <input type="text" id="new-nom" placeholder="Saisir le nom..." required>
+                    <div class="form-group ai-assist">
+                        <label data-i18n="product_name">Nom du produit * <span id="ai-badge" class="ai-badge">✨ Auto-fill IA (Jeux uniquement)</span></label>
+                        <input type="text" id="new-nom" placeholder="Saisis le nom puis clique ailleurs..." required>
                     </div>
-
                     <div class="form-group-row">
-                        <div class="form-group">
-                            <label data-i18n="labelPrice">Prix unitaire *</label>
-                            <input type="number" id="new-prix" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="labelStock">Stock initial *</label>
-                            <input type="number" id="new-quantite" required>
-                        </div>
+                        <div class="form-group"><label data-i18n="price">Prix unitaire (€) *</label><input type="number" id="new-prix" step="0.01" required></div>
+                        <div class="form-group"><label data-i18n="stock">Stock initial *</label><input type="number" id="new-quantite" required></div>
                     </div>
+                    <div class="form-group"><label data-i18n="image_url">URL de l'image (Optionnel)</label><input type="text" id="new-image" placeholder="https://..."></div>
 
-                    <div class="form-group">
-                        <label>URL de l'image (Optionnel)</label>
-                        <input type="text" id="new-image" placeholder="https://...">
-                    </div>
-
-                    <div id="champs-jeu" class="dynamic-fields">
+                    <div id="fields-jeu" class="dynamic-fields">
                         <div class="form-group-row">
-                            <div class="form-group">
-                                <label>Plateforme *</label>
-                                <select id="plateforme-jeu">
-                                    <option value="PS5">PS5</option>
-                                    <option value="Xbox Series">Xbox Series</option>
-                                    <option value="Nintendo Switch">Nintendo Switch</option>
-                                    <option value="PC">PC</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Genre *</label>
-                                <select id="genre-jeu">
-                                    <option value="Action/Aventure">Action/Aventure</option>
-                                    <option value="RPG">RPG</option>
-                                    <option value="Sport">Sport</option>
-                                    <option value="FPS/Tir">FPS/Tir</option>
-                                    <option value="Combat">Combat</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label data-i18n="platform">Plateforme de jeu *</label><input type="text" id="new-plateforme-jeu" placeholder="PS5, Switch, PC..."></div>
+                            <div class="form-group"><label data-i18n="condition">État *</label><select id="new-etat"><option value="Neuf" data-i18n="new">Neuf</option><option value="Occasion" data-i18n="used">Occasion</option></select></div>
                         </div>
-                        <div class="form-group">
-                            <label>État *</label>
-                            <select id="etat-jeu">
-                                <option value="Neuf">Neuf</option>
-                                <option value="Occasion">Occasion</option>
-                            </select>
-                        </div>
+                        <div class="form-group"><label data-i18n="genre">Genre *</label><select id="new-genre"><option value="">-- Sélectionner --</option><option>Action/Aventure</option><option>RPG</option><option>FPS/TPS</option><option>Plateforme</option><option>Combat</option><option>Course</option><option>Sport</option><option>Stratégie/Gestion</option><option>Simulation</option><option>Party Game</option></select></div>
                     </div>
 
-                    <div id="champs-console" class="dynamic-fields hidden">
-                        <div class="form-group">
-                            <label>Constructeur *</label>
-                            <select id="constructeur-console">
-                                <option value="Sony">Sony</option>
-                                <option value="Microsoft">Microsoft</option>
-                                <option value="Nintendo">Nintendo</option>
-                            </select>
+                    <div id="fields-console" class="dynamic-fields hidden">
+                        <div class="form-group-row">
+                            <div class="form-group"><label data-i18n="manufacturer">Constructeur *</label><select id="new-constructeur"><option value="Sony">Sony</option><option value="Microsoft">Microsoft</option><option value="Nintendo">Nintendo</option></select></div>
+                            <div class="form-group"><label data-i18n="model">Modèle *</label><select id="new-modele"><option value="Standard">Standard</option><option value="Slim">Slim</option><option value="Pro">Pro</option><option value="Series X">Series X</option><option value="Series S">Series S</option><option value="OLED">OLED</option></select></div>
                         </div>
                         <div class="form-group-row">
-                            <div class="form-group">
-                                <label>Version / Modèle *</label>
-                                <select id="version-console">
-                                    <option value="Standard">Standard</option>
-                                    <option value="Slim">Slim</option>
-                                    <option value="Pro">Pro</option>
-                                    <option value="OLED">OLED</option>
-                                    <option value="Lite">Lite</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Couleur *</label>
-                                <input type="text" id="couleur-console" placeholder="ex: Blanc, Noir...">
-                            </div>
+                            <div class="form-group"><label data-i18n="color">Couleur *</label><input type="text" id="new-couleur-console" placeholder="ex: Blanc, Noir"></div>
+                            <div class="form-group"><label data-i18n="controllers">Manettes incluses *</label><input type="number" id="new-manettes" min="0" value="1"></div>
                         </div>
                     </div>
 
-                    <div id="champs-accessoire" class="dynamic-fields hidden">
+                    <div id="fields-accessoire" class="dynamic-fields hidden">
                         <div class="form-group-row">
-                            <div class="form-group">
-                                <label>Type d'accessoire *</label>
-                                <input type="text" id="type-accessoire" placeholder="ex: Manette, Casque...">
-                            </div>
-                            <div class="form-group">
-                                <label>Couleur *</label>
-                                <input type="text" id="couleur-accessoire" placeholder="ex: Carbon Black...">
-                            </div>
+                            <div class="form-group"><label data-i18n="device_type">Type de périphérique *</label><select id="new-type-acc"><option value="Manette">Manette</option><option value="Casque Gaming">Casque Gaming</option><option value="Clavier/Souris">Clavier/Souris</option><option value="Volant/Arcade">Volant/Arcade</option><option value="Câbles/Autres">Câbles/Autres</option></select></div>
+                            <div class="form-group"><label data-i18n="color">Couleur *</label><input type="text" id="new-couleur-acc" placeholder="ex: Rouge, Noir"></div>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn-submit" data-i18n="btnAdd">✅ Ajouter à la base de données</button>
+                    <button type="submit" class="btn-submit" data-i18n="add_btn">✅ Ajouter à l'inventaire</button>
                 </form>
             </section>
 
-            <section id="admin-section" class="panel form-panel hidden">
-                <h2 style="color: var(--danger-color);" data-i18n="adminPanelTitle">🛡️ Panneau d'Administration</h2>
-                
-                <div class="form-group-row" style="border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">
+            <!-- Gestion utilisateurs -->
+            <section id="users-section" class="panel form-panel">
+                <h2 data-i18n="users_title">👥 Gestion des utilisateurs</h2>
+                <div class="form-group-row">
                     <div class="form-group">
-                        <h3 data-i18n="adminAddUser">Ajouter un Employé</h3>
-                        <input type="text" id="new-emp-name" placeholder="Nom d'utilisateur" style="margin-bottom: 10px;">
-                        <input type="password" id="new-emp-pass" placeholder="Mot de passe" style="margin-bottom: 10px;">
-                        <select id="new-emp-role" style="margin-bottom: 10px;">
-                            <option value="employe">Employé (CRUD basique)</option>
-                            <option value="admin">Administrateur (Accès total)</option>
+                        <label data-i18n="username">Nom d'utilisateur</label>
+                        <input type="text" id="new-username" placeholder="ex: jean.dupont">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="password">Mot de passe</label>
+                        <input type="password" id="new-password" placeholder="*****">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="role">Rôle</label>
+                        <select id="new-role">
+                            <option value="user" data-i18n="role_user">Utilisateur</option>
+                            <option value="admin" data-i18n="role_admin">Administrateur</option>
                         </select>
-                        <button id="btn-add-user" class="btn-submit" style="background: var(--color-accessoire);">Créer Compte</button>
                     </div>
-                    <div class="form-group">
-                        <h3 data-i18n="adminUserList">Utilisateurs Actifs</h3>
-                        <ul id="user-list" style="list-style: none; padding: 0;"></ul>
-                    </div>
+                    <button id="add-user-btn" class="btn-action" style="align-self:flex-end;" data-i18n="add_user">➕ Ajouter utilisateur</button>
                 </div>
-
-                <div>
-                    <h3 data-i18n="adminLogs">Historique des Opérations (Audit)</h3>
-                    <div id="audit-log-container" style="background: #0b0c10; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9em; color: #a0a0b0;">
-                        </div>
+                <div id="users-list-container">
+                    <h3 data-i18n="user_list">Liste des utilisateurs</h3>
+                    <table id="users-table">
+                        <thead>
+                            <tr><th data-i18n="username">Nom</th><th data-i18n="role">Rôle</th><th data-i18n="actions">Actions</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </section>
         </main>
+
+        <!-- Modal d'édition produit -->
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header"><h2 data-i18n="edit_title">✏️ Modifier le produit</h2><span class="close-modal">&times;</span></div>
+                <form id="edit-form">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group"><label data-i18n="product_name">Nom</label><input type="text" id="edit-nom" required></div>
+                    <div class="form-group-row">
+                        <div class="form-group"><label data-i18n="price">Prix (€)</label><input type="number" id="edit-prix" step="0.01" required></div>
+                        <div class="form-group"><label data-i18n="stock">Quantité</label><input type="number" id="edit-quantite" required></div>
+                    </div>
+                    <div class="form-group"><label data-i18n="image_url">Image URL</label><input type="text" id="edit-image"></div>
+                    <div id="edit-dynamic-fields"></div>
+                    <button type="submit" class="btn-submit" data-i18n="save">💾 Sauvegarder</button>
+                </form>
+            </div>
+        </div>
     </div>
-=======
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Inventory Pro</title>
 
-<style>
-body { font-family: Arial; margin:0; background:#0f172a; color:white; }
-.hidden { display:none; }
-header { background:#1e293b; padding:15px; display:flex; justify-content:space-between; }
-.container { padding:20px; }
-input, select { padding:8px; margin:5px 0; width:100%; }
-button { padding:10px; background:#22c55e; border:none; cursor:pointer; }
-.card { background:#1e293b; padding:15px; margin:10px 0; border-radius:10px; }
-</style>
-
-</head>
-<body>
-
-<!-- LOGIN -->
-<div id="login">
-    <h2>Connexion</h2>
-    <input id="user" placeholder="Nom">
-    <input id="pass" type="password" placeholder="Mot de passe">
-    <button onclick="login()">Se connecter</button>
-    <p id="error"></p>
-</div>
-
-<!-- APP -->
-<div id="app" class="hidden">
-
-<header>
-    <h2>🎮 Pixel Inventory</h2>
-    <button onclick="logout()">Déconnexion</button>
-</header>
-
-<div class="container">
-
-<h3>Ajouter produit</h3>
-<input id="name" placeholder="Nom produit">
-<input id="price" type="number" placeholder="Prix">
-<input id="qty" type="number" placeholder="Quantité">
-<button onclick="addProduct()">Ajouter</button>
-
-<h3>Inventaire</h3>
-<div id="list"></div>
-
-</div>
-</div>
-
-<script>
-
-// ===== LOGIN =====
-function login(){
-    let u = document.getElementById("user").value;
-    let p = document.getElementById("pass").value;
-
-    if(u==="admin" && p==="1234"){
-        document.getElementById("login").classList.add("hidden");
-        document.getElementById("app").classList.remove("hidden");
-        loadProducts();
-    } else {
-        document.getElementById("error").innerText = "Erreur login";
-    }
-}
-
-function logout(){
-    location.reload();
-}
-
-// ===== PRODUITS =====
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-function addProduct(){
-    let name = document.getElementById("name").value;
-    let price = document.getElementById("price").value;
-    let qty = document.getElementById("qty").value;
-
-    if(!name || !price || !qty){
-        alert("Remplis tout !");
-        return;
-    }
-
-    products.push({name, price, qty});
-    localStorage.setItem("products", JSON.stringify(products));
-
-    display();
-}
-
-function loadProducts(){
-    display();
-}
-
-function display(){
-    let list = document.getElementById("list");
-    list.innerHTML = "";
-
-    products.forEach((p, i)=>{
-        list.innerHTML += `
-        <div class="card">
-            <strong>${p.name}</strong><br>
-            Prix: ${p.price} €<br>
-            Stock: ${p.qty}<br>
-            <button onclick="deleteProduct(${i})">Supprimer</button>
-        </div>`;
-    });
-}
-
-function deleteProduct(i){
-    products.splice(i,1);
-    localStorage.setItem("products", JSON.stringify(products));
-    display();
-}
-
-</script>
->>>>>>> 14d8ced2aedc515405dd7b5f36d6896f166b0982
-
+    <script src="scripts/app.js"></script>
 </body>
 </html>
