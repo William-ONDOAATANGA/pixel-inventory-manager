@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Inventory - ERP System</title>
@@ -227,7 +228,121 @@
             </section>
         </main>
     </div>
+=======
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Inventory Pro</title>
 
-    <script src="scripts/app.js"></script>
+<style>
+body { font-family: Arial; margin:0; background:#0f172a; color:white; }
+.hidden { display:none; }
+header { background:#1e293b; padding:15px; display:flex; justify-content:space-between; }
+.container { padding:20px; }
+input, select { padding:8px; margin:5px 0; width:100%; }
+button { padding:10px; background:#22c55e; border:none; cursor:pointer; }
+.card { background:#1e293b; padding:15px; margin:10px 0; border-radius:10px; }
+</style>
+
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+    <h2>Connexion</h2>
+    <input id="user" placeholder="Nom">
+    <input id="pass" type="password" placeholder="Mot de passe">
+    <button onclick="login()">Se connecter</button>
+    <p id="error"></p>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<header>
+    <h2>🎮 Pixel Inventory</h2>
+    <button onclick="logout()">Déconnexion</button>
+</header>
+
+<div class="container">
+
+<h3>Ajouter produit</h3>
+<input id="name" placeholder="Nom produit">
+<input id="price" type="number" placeholder="Prix">
+<input id="qty" type="number" placeholder="Quantité">
+<button onclick="addProduct()">Ajouter</button>
+
+<h3>Inventaire</h3>
+<div id="list"></div>
+
+</div>
+</div>
+
+<script>
+
+// ===== LOGIN =====
+function login(){
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if(u==="admin" && p==="1234"){
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+        loadProducts();
+    } else {
+        document.getElementById("error").innerText = "Erreur login";
+    }
+}
+
+function logout(){
+    location.reload();
+}
+
+// ===== PRODUITS =====
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function addProduct(){
+    let name = document.getElementById("name").value;
+    let price = document.getElementById("price").value;
+    let qty = document.getElementById("qty").value;
+
+    if(!name || !price || !qty){
+        alert("Remplis tout !");
+        return;
+    }
+
+    products.push({name, price, qty});
+    localStorage.setItem("products", JSON.stringify(products));
+
+    display();
+}
+
+function loadProducts(){
+    display();
+}
+
+function display(){
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    products.forEach((p, i)=>{
+        list.innerHTML += `
+        <div class="card">
+            <strong>${p.name}</strong><br>
+            Prix: ${p.price} €<br>
+            Stock: ${p.qty}<br>
+            <button onclick="deleteProduct(${i})">Supprimer</button>
+        </div>`;
+    });
+}
+
+function deleteProduct(i){
+    products.splice(i,1);
+    localStorage.setItem("products", JSON.stringify(products));
+    display();
+}
+
+</script>
+>>>>>>> 14d8ced2aedc515405dd7b5f36d6896f166b0982
+
 </body>
 </html>
